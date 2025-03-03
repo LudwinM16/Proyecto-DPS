@@ -1,39 +1,25 @@
-// lib/db.js
-const sql = require('mssql');
+import mysql from 'mysql2/promise';
 
-// Función para verificar las variables de entorno
-function getEnvVar(variable) {
-  const value = process.env[variable];
-  if (!value) {
-    throw new Error(`Environment variable ${variable} is not defined`);
-  }
-  return value;
-}
 
-const config = {
-  user: getEnvVar('proyectoDPS'), // Lanza error si no está definido
-  password: getEnvVar('DPS'),
-  server: getEnvVar('localhost:3000'),
-  database: getEnvVar('gestionproyectos'),
-  options: {
-    encrypt: true,
-    trustServerCertificate: false,
-  }
-};
 
-let pool = null;
+export const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'usuariodps',
+  password: '123456',
+  database: 'gestionproyectos',
+  port: 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
 
-async function getConnection() {
-  if (!pool) {
+// Prueba la conexión
+(async () => {
     try {
-      pool = await sql.connect(config);
-      console.log('Connected to SQL Server');
-    } catch (err) {
-      console.error('Database connection failed:', err);
-      throw err;
+      const connection = await pool.getConnection();
+      console.log('✅ Conectado a la base de datos');
+      connection.release();
+    } catch (error) {
+      console.error('❌ Error al conectar a la base de datos:', error.message);
     }
-  }
-  return pool;
-}
-
-module.exports = { getConnection };
+  })();

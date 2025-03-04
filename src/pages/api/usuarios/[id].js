@@ -1,7 +1,11 @@
-import { getUsuarioPorId, actualizarUsuario, eliminarUsuario } from '@/services/usuarios';
+import { getUsuarioPorId, actualizarUsuario, eliminarUsuario } from '@/lib/usuarios';
 
 export default async function handler(req, res) {
     const { id } = req.query;
+
+    if (!id) {
+        return res.status(400).json({ message: 'Falta el ID del usuario' });
+    }
 
     switch (req.method) {
         case 'GET':
@@ -12,6 +16,7 @@ export default async function handler(req, res) {
                 }
                 res.status(200).json(usuario);
             } catch (error) {
+                console.error('Error al obtener usuario:', error);
                 res.status(500).json({ message: 'Error al obtener el usuario' });
             }
             break;
@@ -21,6 +26,7 @@ export default async function handler(req, res) {
                 const usuarioActualizado = await actualizarUsuario(id, req.body);
                 res.status(200).json(usuarioActualizado);
             } catch (error) {
+                console.error('Error al actualizar usuario:', error);
                 res.status(500).json({ message: 'Error al actualizar el usuario' });
             }
             break;
@@ -30,6 +36,7 @@ export default async function handler(req, res) {
                 await eliminarUsuario(id);
                 res.status(200).json({ message: 'Usuario eliminado correctamente' });
             } catch (error) {
+                console.error('Error al eliminar usuario:', error);
                 res.status(500).json({ message: 'Error al eliminar el usuario' });
             }
             break;

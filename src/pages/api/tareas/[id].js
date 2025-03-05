@@ -1,45 +1,52 @@
-import { conectarDB } from "@/utils/db";
+import { obtenerTareaPorId, actualizarTarea, eliminarTarea } from '@/lib/tareas';
 
 export default async function handler(req, res) {
-  const { id } = req.query;
-  const db = await conectarDB();
+    const { id } = req.query;
 
-  if (req.method === "GET") {
-    try {
-      const [rows] = await db.query("SELECT * FROM Tareas WHERE id = ?", [id]);
-      if (rows.length === 0) {
-        return res.status(404).json({ error: "Tarea no encontrada" });
-      }
-      res.status(200).json(rows[0]);
-    } catch (error) {
-      res.status(500).json({ error: "Error al obtener la tarea" });
+    if (!id) {
+        return res.status(400).json({ message: 'Falta el ID de la tarea' });
     }
-  } else if (req.method === "PATCH") {
-    const { nombre, descripcion, estado, proyecto_id, asignado_a } = req.body;
-    try {
-      const [result] = await db.query(
-        "UPDATE Tareas SET nombre = ?, descripcion = ?, estado = ?, proyecto_id = ?, asignado_a = ? WHERE id = ?",
-        [nombre, descripcion, estado, proyecto_id, asignado_a, id]
-      );
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: "Tarea no encontrada" });
-      }
-      res.status(200).json({ id, ...req.body });
-    } catch (error) {
-      res.status(500).json({ error: "Error al actualizar la tarea" });
+
+    switch (req.method) {
+        case 'GET':
+            try {
+                const tarea = await obtenerTareaPorId(id);
+                if (!tarea) {
+                    return res.status(404).json({ message: 'Tarea no encontrada' });
+                }
+                res.status(200).json(tarea);
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+            break;
+
+        case 'PUT':
+            try {
+                const resultado = await actualizarTarea(id, req.body);
+                if (!resultado) {
+                    return res.status(404).json({ message: 'Tarea no encontrada' });
+                }
+                res.status(200).json(resultado);
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+            break;
+
+        case 'DELETE':
+            try {
+                const resultado = await eliminarTarea(id);
+                if (!resultado) {
+                    return res.status(404).json({ message: 'Tarea no encontrada' });
+                }
+                res.status(200).json(resultado);
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+            break;
+
+        default:
+            res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+            res.status(405).json({ message: `Método ${req.method} no permitido` });
+            break;
     }
-  } else if (req.method === "DELETE") {
-    try {
-      const [result] = await db.query("DELETE FROM Tareas WHERE id = ?", [id]);
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: "Tarea no encontrada" });
-      }
-      res.status(200).json({ message: "Tarea eliminada" });
-    } catch (error) {
-      res.status(500).json({ error: "Error al eliminar la tarea" });
-    }
-  } else {
-    res.setHeader("Allow", ["GET", "PATCH", "DELETE"]);
-    res.status(405).end(`Método ${req.method} no permitido`);
-  }
 }

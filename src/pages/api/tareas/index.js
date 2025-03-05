@@ -1,4 +1,4 @@
-import { pool } from "@/src/config/db";
+import { pool } from "@/config/db";
 
 export default async function handler(req, res) {
     switch (req.method) {

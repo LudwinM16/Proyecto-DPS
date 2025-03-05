@@ -1,4 +1,4 @@
-import { pool } from '@/pages/api/db';
+import { pool } from '@/config/db';
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {

@@ -1,39 +1,39 @@
-import db from "@/src/lib/db";
+import { pool } from '@/config/db';
 
 export default async function handler(req, res) {
     switch (req.method) {
-        case "GET":
-            return obtenerProyectos(req, res);
-        case "POST":
-            return crearProyecto(req, res);
+        case 'GET':
+            try {
+                const [proyectos] = await pool.query('SELECT * FROM proyectos');
+                res.status(200).json(proyectos);
+            } catch (error) {
+                console.error('Error al obtener proyectos:', error);
+                res.status(500).json({ message: 'Error al obtener proyectos' });
+            }
+            break;
+
+        case 'POST':
+            try {
+                const { nombre, descripcion, fecha_inicio, fecha_fin } = req.body;
+                if (!nombre || !descripcion || !fecha_inicio || !fecha_fin) {
+                    return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+                }
+
+                const [result] = await pool.query(
+                    'INSERT INTO proyectos (nombre, descripcion, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?)',
+                    [nombre, descripcion, fecha_inicio, fecha_fin]
+                );
+
+                res.status(201).json({ id: result.insertId, message: 'Proyecto creado correctamente' });
+            } catch (error) {
+                console.error('Error al crear proyecto:', error);
+                res.status(500).json({ message: 'Error al crear proyecto' });
+            }
+            break;
+
         default:
-            return res.status(405).json({ mensaje: "Método no permitido" });
-    }
-}
-
-async function obtenerProyectos(req, res) {
-    try {
-        const [rows] = await db.query("SELECT * FROM Proyectos");
-        return res.status(200).json(rows);
-    } catch (error) {
-        return res.status(500).json({ mensaje: "Error al obtener proyectos" });
-    }
-}
-
-async function crearProyecto(req, res) {
-    try {
-        const { nombre, descripcion, fecha_inicio, fecha_fin, gerente_id } = req.body;
-        if (!nombre || !gerente_id) {
-            return res.status(400).json({ mensaje: "Nombre y gerente_id son obligatorios" });
-        }
-
-        const [result] = await db.query(
-            "INSERT INTO Proyectos (nombre, descripcion, fecha_inicio, fecha_fin, gerente_id) VALUES (?, ?, ?, ?, ?)",
-            [nombre, descripcion, fecha_inicio, fecha_fin, gerente_id]
-        );
-        
-        return res.status(201).json({ id: result.insertId, nombre, descripcion, fecha_inicio, fecha_fin, gerente_id });
-    } catch (error) {
-        return res.status(500).json({ mensaje: "Error al crear el proyecto" });
+            res.setHeader('Allow', ['GET', 'POST']);
+            res.status(405).end(`Método ${req.method} no permitido`);
+            break;
     }
 }

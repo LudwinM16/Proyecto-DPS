@@ -1,5 +1,5 @@
-import { hashPassword } from "@/utils/auth";
-import { db } from "@/utils/db";
+import { hashPassword } from '@/config/hashPass';
+import { pool } from '@/config/db';
 
 export default async function handler(req, res) {
     if (req.method !== "POST") {
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     try {
         const hashedPassword = await hashPassword(contrasena);
         
-        const [result] = await db.execute(
+        const [result] = await pool.execute(
             "INSERT INTO Usuarios (nombre_usuario, contrasena, rol_id) VALUES (?, ?, ?)",
             [nombre_usuario, hashedPassword, rol_id]
         );

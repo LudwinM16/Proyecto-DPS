@@ -1,47 +1,76 @@
 import { pool } from '@/config/db';
-import bcrypt from "bcryptjs"; // Usa bcryptjs en lugar de bcrypt
-import jwt from "jsonwebtoken";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Método no permitido" });
-  }
-
-  const { nombre_usuario, contrasena } = req.body;
-
-  if (!nombre_usuario || !contrasena) {
-    return res.status(400).json({ error: "Todos los campos son obligatorios" });
-  }
-
-  try {
-    // Buscar usuario en la base de datos
-    const [rows] = await pool.execute(
-      "SELECT * FROM usuarios WHERE nombre_usuario = ?",
-      [nombre_usuario]
-    );
-
-    if (rows.length === 0) {
-      return res.status(401).json({ error: "Usuario no encontrado" });
+    if (req.method !== "POST") {
+        return res.status(405).json({ error: "Método no permitido" });
     }
 
-    const usuario = rows[0];
+    const { nombre_usuario, contrasena } = req.body;
 
-    // Comparar contraseña encriptada
-    const match = await bcrypt.compare(contrasena, usuario.contrasena);
-    if (!match) {
-      return res.status(401).json({ error: "Contraseña incorrecta" });
+    if (!nombre_usuario || !contrasena) {
+        return res.status(400).json({ error: "Todos los campos son obligatorios" });
     }
 
-// Cambia el valor de 'mi_secreto' por una cadena secreta más segura
-const token = jwt.sign(
-  { id: usuario.id, rol_id: usuario.rol_id },
-  'b8b4eec6d2e5a1f0b8f8b263f92b3c83f053e0f1e9e601f8b8d37fa488d15d4e',  // Aquí el secreto directo
-  { expiresIn: "8h" }
-);
+    try {
+        // Buscar usuario en la BD
+        const [rows] = await pool.execute(
+            "SELECT id, nombre_usuario, contrasena, rol_id FROM usuarios WHERE nombre_usuario = ?",
+            [nombre_usuario]
+        );
 
-    return res.status(200).json({ mensaje: "Inicio de sesión exitoso", token, usuario });
-  } catch (error) {
-    console.error("Error en el login:", error);
-    return res.status(500).json({ error: "Error en el servidor" });
-  }
+        if (rows.length === 0) {
+            return res.status(401).json({ error: "Usuario no encontrado" });
+        }
+
+        const usuario = rows[0];
+        console.log("Cuerpo recibido:", req.body); 
+        console.log("Contraseña ingresada (Texto plano):", contrasena);
+        console.log("Contraseña almacenada en BD (Hash):", usuario.contrasena);
+        console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
+        
+
+        // Verificar que la contrasena en BD no sea null o undefined
+        if (!usuario.contrasena) {
+            return res.status(500).json({ error: "Error en el servidor: La contrasena en BD es inválida." });
+        }
+
+        // Comparar la contrasena encriptada con un try-catch extra
+        try {
+            const match = await bcrypt.compare(contrasena, usuario.contrasena);
+            if (!match) {
+                return res.status(401).json({ error: "contrasena incorrecta" });
+            }
+        } catch (bcryptError) {
+            console.error("Error al comparar contrasenas:", bcryptError);
+            return res.status(500).json({ error: "Error interno del servidor al verificar contrasena." });
+        }
+
+        // Validar que JWT_SECRET está configurado
+        if (!process.env.JWT_SECRET) {
+            console.error("JWT_SECRET no está definido en las variables de entorno.");
+            return res.status(500).json({ error: "Error de configuración del servidor." });
+        }
+
+        // Generar token seguro
+        const token = jwt.sign({ id: usuario.id, rol: usuario.rol_id }, process.env.JWT_SECRET, {
+            expiresIn: '8h'
+        });
+
+        return res.status(200).json({
+            mensaje: "Inicio de sesión exitoso",
+            token,
+            usuario: {
+                id: usuario.id,
+                nombre_usuario: usuario.nombre_usuario,
+                rol_id: usuario.rol_id
+            }
+        });
+
+    } catch (error) {
+        console.error("Error en el login:", error);
+        return res.status(500).json({ error: "Error interno del servidor" });
+    }
 }

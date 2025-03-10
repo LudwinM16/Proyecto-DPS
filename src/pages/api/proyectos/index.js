@@ -1,39 +1,46 @@
 import { pool } from '@/config/db';
+import authMiddleware from '@/pages/api/authMiddleware';
 
 export default async function handler(req, res) {
-    switch (req.method) {
-        case 'GET':
-            try {
-                const [proyectos] = await pool.query('SELECT * FROM proyectos');
-                res.status(200).json(proyectos);
-            } catch (error) {
-                console.error('Error al obtener proyectos:', error);
-                res.status(500).json({ message: 'Error al obtener proyectos' });
-            }
-            break;
+    await authMiddleware(req, res, async () => { // Proteger la ruta
+        if (req.user.rol_id !== 2) {
+            return res.status(403).json({ error: 'Acceso denegado. Solo los gerentes pueden gestionar proyectos.' });
+        }
 
-        case 'POST':
-            try {
-                const { nombre, descripcion, fecha_inicio, fecha_fin } = req.body;
-                if (!nombre || !descripcion || !fecha_inicio || !fecha_fin) {
-                    return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+        switch (req.method) {
+            case 'GET':
+                try {
+                    const [proyectos] = await pool.query('SELECT * FROM proyectos');
+                    res.status(200).json(proyectos);
+                } catch (error) {
+                    console.error('Error al obtener proyectos:', error);
+                    res.status(500).json({ message: 'Error al obtener proyectos' });
                 }
+                break;
 
-                const [result] = await pool.query(
-                    'INSERT INTO proyectos (nombre, descripcion, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?)',
-                    [nombre, descripcion, fecha_inicio, fecha_fin]
-                );
+            case 'POST':
+                try {
+                    const { nombre, descripcion, fecha_inicio, fecha_fin } = req.body;
+                    if (!nombre || !descripcion || !fecha_inicio || !fecha_fin) {
+                        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+                    }
 
-                res.status(201).json({ id: result.insertId, message: 'Proyecto creado correctamente' });
-            } catch (error) {
-                console.error('Error al crear proyecto:', error);
-                res.status(500).json({ message: 'Error al crear proyecto' });
-            }
-            break;
+                    const [result] = await pool.query(
+                        'INSERT INTO proyectos (nombre, descripcion, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?)',
+                        [nombre, descripcion, fecha_inicio, fecha_fin]
+                    );
 
-        default:
-            res.setHeader('Allow', ['GET', 'POST']);
-            res.status(405).end(`Método ${req.method} no permitido`);
-            break;
-    }
+                    res.status(201).json({ id: result.insertId, message: 'Proyecto creado correctamente' });
+                } catch (error) {
+                    console.error('Error al crear proyecto:', error);
+                    res.status(500).json({ message: 'Error al crear proyecto' });
+                }
+                break;
+
+            default:
+                res.setHeader('Allow', ['GET', 'POST']);
+                res.status(405).end(`Método ${req.method} no permitido`);
+                break;
+        }
+    });
 }

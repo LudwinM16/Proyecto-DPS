@@ -14,7 +14,6 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Buscar usuario en la BD
         const [rows] = await pool.execute(
             "SELECT id, nombre_usuario, contrasena, rol_id FROM usuarios WHERE nombre_usuario = ?",
             [nombre_usuario]
@@ -32,12 +31,10 @@ export default async function handler(req, res) {
 
         
 
-        // Verificar que la contrasena en BD no sea null o undefined
         if (!usuario.contrasena) {
             return res.status(500).json({ error: "Error en el servidor: La contrasena en BD es inválida." });
         }
 
-        // Comparar la contrasena encriptada con un try-catch extra
         try {
             const match = await bcrypt.compare(contrasena, usuario.contrasena);
             if (!match) {
@@ -48,17 +45,19 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: "Error interno del servidor al verificar contrasena." });
         }
 
-        // Validar que JWT_SECRET está configurado
         if (!process.env.JWT_SECRET) {
             console.error("JWT_SECRET no está definido en las variables de entorno.");
             return res.status(500).json({ error: "Error de configuración del servidor." });
         }
 
-        // Generar token seguro
-        const token = jwt.sign({ id: usuario.id, rol: usuario.rol_id }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: usuario.id, rol: usuario.rol_id, nombre_usuario: usuario.nombre_usuario }, process.env.JWT_SECRET, {
             expiresIn: '8h'
         });
 
+        await pool.query(
+            'INSERT INTO actividad (accion, descripcion, usuario_id) VALUES (?, ?, ?)',
+            ['LOGIN', `Inicio de sesión exitoso`, usuario.id]
+        );
         return res.status(200).json({
             mensaje: "Inicio de sesión exitoso",
             token,

@@ -1,9 +1,9 @@
 import { getUsuarioPorId, actualizarUsuario, eliminarUsuario } from '@/lib/usuarios';
-import authMiddleware from '@/api/authMiddleware';
+import authMiddleware from '@/pages/api/authMiddleware';
 import bcrypt from 'bcryptjs';
 
 export default async function handler(req, res) {
-    await authMiddleware(req, res, async () => { // Proteger la ruta
+    await authMiddleware(req, res, async () => { 
         if (req.user.rol_id !== 1) {
             return res.status(403).json({ error: 'Acceso denegado. Solo administradores pueden gestionar usuarios.' });
         }
@@ -29,15 +29,19 @@ export default async function handler(req, res) {
 
             case 'PUT':
                 try {
-                    const { nombre_usuario, contraseña, rol_id } = req.body;
-                    let hashContraseña = null;
+                    const { nombre_usuario, contrasena, rol_id } = req.body;
+                    let hashContrasena = null;
 
-                    if (contraseña) {
+                    if (contrasena) {
                         const salt = await bcrypt.genSalt(10);
-                        hashContraseña = await bcrypt.hash(contraseña, salt);
+                        hashContrasena = await bcrypt.hash(contrasena, salt);
                     }
 
-                    const usuarioActualizado = await actualizarUsuario(id, { nombre_usuario, contraseña: hashContraseña, rol_id });
+                    const usuarioActualizado = await actualizarUsuario(id, {
+                        nombre_usuario,
+                        contrasena: hashContrasena, 
+                        rol_id
+                    }, req.user.id);
                     res.status(200).json(usuarioActualizado);
                 } catch (error) {
                     console.error('Error al actualizar usuario:', error);
@@ -45,9 +49,10 @@ export default async function handler(req, res) {
                 }
                 break;
 
+
             case 'DELETE':
                 try {
-                    await pool.query('DELETE FROM usuarios WHERE id = ?', [id]);
+                    await eliminarUsuario(id, req.user.id);
                     res.status(200).json({ message: 'Usuario eliminado correctamente' });
                 } catch (error) {
                     console.error('Error al eliminar usuario:', error);

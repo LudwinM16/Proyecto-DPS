@@ -2,7 +2,7 @@ import { pool } from '@/config/db';
 import authMiddleware from '@/pages/api/authMiddleware';
 
 export default async function handler(req, res) {
-    await authMiddleware(req, res, async () => { // Proteger la ruta
+    await authMiddleware(req, res, async () => { 
         if (req.user.rol_id !== 2) {
             return res.status(403).json({ error: 'Acceso denegado. Solo los gerentes pueden gestionar proyectos.' });
         }

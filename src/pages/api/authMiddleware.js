@@ -19,8 +19,6 @@ export default async function authMiddleware(req, res, next, rolesPermitidos = [
 
         req.user = rows[0];
         
-
-        // Validar si el rol del usuario está permitido
         if (rolesPermitidos.length > 0 && !rolesPermitidos.includes(req.user.rol_id)) {
             return res.status(403).json({ error: 'Acceso denegado, permisos insuficientes' });
         }

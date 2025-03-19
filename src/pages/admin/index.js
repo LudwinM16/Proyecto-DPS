@@ -35,7 +35,7 @@ export default function AdminPanel() {
     const abrirModalEditar = (usuario) => {
         setUsuarioEditar(usuario);
         setNuevoNombre(usuario.nombre_usuario);
-        setNuevaContrasena(""); 
+        setNuevaContrasena("");
         setNuevoRol(usuario.rol_id);
     };
 
@@ -48,13 +48,13 @@ export default function AdminPanel() {
 
     const limpiarTexto = (texto) => {
         return texto
-            .replace(/[\d]/g, '') 
+            .replace(/[\d]/g, '')
             .replace(
                 /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|\uFE0F|\u200D)/g,
                 ''
-            ) 
-            .replace(/[^a-zA-Z\s_-]/g, '') 
-            .trim(); 
+            )
+            .replace(/[^a-zA-Z\s_-]/g, '')
+            .trim();
     };
 
     const agregarUsuario = useMutation({
@@ -62,7 +62,7 @@ export default function AdminPanel() {
             console.log("⏳ Enviando solicitud a la API...");
             const res = await axios.post("/api/usuarios", {
                 nombre_usuario: nombreUsuario,
-                contrasena: contraseña, 
+                contrasena: contraseña,
                 rol_id: rolId
             }, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
@@ -73,7 +73,7 @@ export default function AdminPanel() {
         },
         onSuccess: () => {
             Swal.fire('¡Éxito!', 'Usuario agregado correctamente', 'success');
-            queryClient.invalidateQueries("usuarios"); 
+            queryClient.invalidateQueries("usuarios");
             setNombreUsuario("");
             setContraseña("");
             setRolId(3);
@@ -92,7 +92,7 @@ export default function AdminPanel() {
         },
         onSuccess: () => {
             Swal.fire('¡Eliminado!', 'Usuario eliminado correctamente', 'success');
-            queryClient.invalidateQueries(["usuarios"]); 
+            queryClient.invalidateQueries(["usuarios"]);
         },
         onError: (error) => {
             console.error("❌ Error al eliminar usuario:", error.response?.data || error.message);
@@ -104,7 +104,7 @@ export default function AdminPanel() {
         mutationFn: async () => {
             await axios.put(`/api/usuarios/${usuarioEditar.id}`, {
                 nombre_usuario: nuevoNombre,
-                contrasena: nuevaContrasena || undefined, 
+                contrasena: nuevaContrasena || undefined,
                 rol_id: nuevoRol
             }, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
@@ -113,7 +113,7 @@ export default function AdminPanel() {
         onSuccess: () => {
             Swal.fire('¡Actualizado!', 'Usuario modificado correctamente', 'success');
             queryClient.invalidateQueries(["usuarios"]);
-            cerrarModalEditar(); 
+            cerrarModalEditar();
         },
         onError: (error) => {
             console.error("❌ Error al editar usuario:", error.response?.data || error.message);
@@ -173,6 +173,10 @@ export default function AdminPanel() {
                     </button>
                     <button onClick={() => router.push('/admin/mantenimiento')} className="btn btn-secondary me-2">
                         Ir a Mantenimiento
+                    </button>
+
+                    <button onClick={() => router.push('/gerente/proyectos')} className="btn btn-secondary me-2">
+                        Ir a Proyectos
                     </button>
                     <button onClick={handleLogout} className="btn btn-danger">
                         Cerrar sesión

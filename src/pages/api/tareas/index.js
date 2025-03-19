@@ -5,17 +5,17 @@ export default async function handler(req, res) {
     await authMiddleware(req, res, async () => { // Proteger la ruta
 
         switch (req.method) {
-            case 'GET': 
+            case 'GET':
                 // Solo los miembros del equipo pueden ver sus propias tareas
                 if (req.user.rol_id !== 3) {
                     return res.status(403).json({ error: 'Acceso denegado. Solo los miembros del equipo pueden ver sus tareas.' });
                 }
                 return await obtenerTareas(req, res);
 
-            case 'POST': 
-                // Solo los gerentes pueden asignar nuevas tareas
-                if (req.user.rol_id !== 2) {
-                    return res.status(403).json({ error: 'Acceso denegado. Solo los gerentes pueden asignar tareas.' });
+            case 'POST':
+                // **Permitir que administradores (rol_id === 1) y gerentes (rol_id === 2) asignen tareas**
+                if (req.user.rol_id !== 2 && req.user.rol_id !== 1) {
+                    return res.status(403).json({ error: 'Acceso denegado. Solo los administradores y gerentes pueden asignar tareas.' });
                 }
                 return await crearTarea(req, res);
 
@@ -35,7 +35,7 @@ const obtenerTareas = async (req, res) => {
     }
 };
 
-// Crear nueva tarea (solo para gerentes)
+// Crear nueva tarea (solo para administradores y gerentes)
 const crearTarea = async (req, res) => {
     try {
         const { nombre, descripcion, estado, proyecto_id, asignado_a } = req.body;

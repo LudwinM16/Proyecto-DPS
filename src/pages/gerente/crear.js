@@ -23,7 +23,7 @@ const CrearProyecto = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             Swal.fire("Éxito", "Proyecto creado correctamente", "success");
-            router.push("/gerente");
+            router.push("/gerente/proyectos");
         } catch (error) {
             Swal.fire("Error", error.response?.data?.message || "No se pudo crear el proyecto", "error");
         }

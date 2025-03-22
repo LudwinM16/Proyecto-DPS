@@ -13,7 +13,7 @@ export default function MantenimientoPanel() {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            router.push("/login");
+            router.push("../");
         } else {
             const user = jwt.decode(token);
             setUsuario(user); 
@@ -58,7 +58,7 @@ export default function MantenimientoPanel() {
         }).then((result) => {
             if (result.isConfirmed) {
                 localStorage.removeItem("token");
-                router.push("/login");
+                router.push("../");
             }
         });
     };

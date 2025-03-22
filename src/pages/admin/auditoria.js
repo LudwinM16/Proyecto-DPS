@@ -39,7 +39,7 @@ export default function AuditoriaPanel() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      router.push("/login");
+      router.push("../");
       return;
     }
 
@@ -86,7 +86,7 @@ export default function AuditoriaPanel() {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
-        router.push("/login");
+        router.push("../");
       }
     });
   };

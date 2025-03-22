@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Asegurar que Bootstrap esté importado
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 

@@ -1,4 +1,3 @@
-import { hashPassword } from '@/config/hashPass';
 import { pool } from '@/config/db';
 
 export default async function handler(req, res) {

@@ -25,7 +25,7 @@ export default function LoginPage() {
             localStorage.setItem("token", data.token);
             window.location.href = "/admin"; // Redirigir al panel de admin
         } else {
-            setError(data.error);
+            setError(data.error);       
         }
     }
 

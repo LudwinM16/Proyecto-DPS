@@ -4,10 +4,10 @@ import * as mysql from 'mysql2/promise';
 
 
 export const pool = mysql.createPool({
-  host: 'sql112.infinityfree.com',
-  user: 'if0_38614292',
-  password: 'proyectodps123',
-  database: 'if0_38614292_gestionproyectos',
+  host: 'bss8ztfozyeuhmb0ted5-mysql.services.clever-cloud.com',
+  user: 'ulc3mgmqnfmgjuh4',
+  password: 'PWJvovdA0i2HfQ1Dx4La',
+  database: 'bss8ztfozyeuhmb0ted5',
   port: 3306,
   waitForConnections: true,
   connectionLimit: 10,

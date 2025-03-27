@@ -4,10 +4,10 @@ import * as mysql from 'mysql2/promise';
 
 
 export const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'usuariodps',
-  password: '123456',
-  database: 'gestionproyectos',
+  host: 'sql112.infinityfree.com',
+  user: 'if0_38614292',
+  password: 'proyectodps123',
+  database: 'if0_38614292_gestionproyectos',
   port: 3306,
   waitForConnections: true,
   connectionLimit: 10,

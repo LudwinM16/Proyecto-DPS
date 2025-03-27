@@ -24,7 +24,6 @@ export default async function handler(req, res) {
         }
 
         const usuario = rows[0];
-
         console.log("Cuerpo recibido:", req.body); 
         console.log("Contraseña ingresada (Texto plano):", contrasena);
         console.log("Contraseña almacenada en BD (Hash):", usuario.contrasena);
@@ -34,20 +33,21 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: "Error en el servidor: La contraseña en BD es inválida." });
         }
 
-        const match = await bcrypt.compare(contrasena, usuario.contrasena);
-        if (!match) {
-            return res.status(401).json({ error: "Contraseña incorrecta" });
+        try {
+            const match = await bcrypt.compare(contrasena, usuario.contrasena);
+            if (!match) {
+                return res.status(401).json({ error: "Contraseña incorrecta" });
+            }
+        } catch (bcryptError) {
+            console.error("Error al comparar contraseñas:", bcryptError);
+            return res.status(500).json({ error: "Error interno del servidor al verificar contraseña." });
         }
 
-        // Usar JWT_SECRET de entorno o uno por defecto si no está definido
-        const jwtSecret = process.env.JWT_SECRET || 'secreto_predeterminado_para_testing';
+        // Usar JWT_SECRET del entorno o una clave fija predeterminada
+        const jwtSecret = process.env.JWT_SECRET || 'bf3d388edbe744b81471aa01b877e52bd029cca005450e6dfb97856682ec5180';
 
         const token = jwt.sign(
-            {
-                id: usuario.id,
-                rol: usuario.rol_id,
-                nombre_usuario: usuario.nombre_usuario
-            },
+            { id: usuario.id, rol: usuario.rol_id, nombre_usuario: usuario.nombre_usuario },
             jwtSecret,
             { expiresIn: '8h' }
         );

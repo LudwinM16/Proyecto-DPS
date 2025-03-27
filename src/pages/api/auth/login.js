@@ -24,40 +24,39 @@ export default async function handler(req, res) {
         }
 
         const usuario = rows[0];
+
         console.log("Cuerpo recibido:", req.body); 
         console.log("Contraseña ingresada (Texto plano):", contrasena);
         console.log("Contraseña almacenada en BD (Hash):", usuario.contrasena);
         console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
-        
-
         if (!usuario.contrasena) {
-            return res.status(500).json({ error: "Error en el servidor: La contrasena en BD es inválida." });
+            return res.status(500).json({ error: "Error en el servidor: La contraseña en BD es inválida." });
         }
 
-        try {
-            const match = await bcrypt.compare(contrasena, usuario.contrasena);
-            if (!match) {
-                return res.status(401).json({ error: "contrasena incorrecta" });
-            }
-        } catch (bcryptError) {
-            console.error("Error al comparar contrasenas:", bcryptError);
-            return res.status(500).json({ error: "Error interno del servidor al verificar contrasena." });
+        const match = await bcrypt.compare(contrasena, usuario.contrasena);
+        if (!match) {
+            return res.status(401).json({ error: "Contraseña incorrecta" });
         }
 
-        if (!process.env.JWT_SECRET) {
-            console.error("JWT_SECRET no está definido en las variables de entorno.");
-            return res.status(500).json({ error: "Error de configuración del servidor." });
-        }
+        // Usar JWT_SECRET de entorno o uno por defecto si no está definido
+        const jwtSecret = process.env.JWT_SECRET || 'secreto_predeterminado_para_testing';
 
-        const token = jwt.sign({ id: usuario.id, rol: usuario.rol_id, nombre_usuario: usuario.nombre_usuario }, process.env.JWT_SECRET, {
-            expiresIn: '8h'
-        });
+        const token = jwt.sign(
+            {
+                id: usuario.id,
+                rol: usuario.rol_id,
+                nombre_usuario: usuario.nombre_usuario
+            },
+            jwtSecret,
+            { expiresIn: '8h' }
+        );
 
         await pool.query(
             'INSERT INTO actividad (accion, descripcion, usuario_id) VALUES (?, ?, ?)',
             ['LOGIN', `Inicio de sesión exitoso`, usuario.id]
         );
+
         return res.status(200).json({
             mensaje: "Inicio de sesión exitoso",
             token,

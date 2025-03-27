@@ -1,3 +1,4 @@
+// src/lib/proyectos.js
 import { pool } from '@/config/db';
 
 // Obtener proyecto por ID
@@ -30,5 +31,20 @@ export async function eliminarProyecto(id) {
         return result.affectedRows > 0;
     } catch (error) {
         throw new Error('Error al eliminar el proyecto');
+    }
+}
+
+// Obtener proyectos basados en tareas asignadas a un usuario
+export async function getProyectosPorUsuario(usuarioId) {
+    try {
+        const [rows] = await pool.query(
+            `SELECT DISTINCT p.* FROM proyectos p 
+            JOIN tareas t ON p.id = t.proyecto_id 
+            WHERE t.usuario_id = ?`,
+            [usuarioId]
+        );
+        return rows;
+    } catch (error) {
+        throw new Error('Error al obtener proyectos del usuario');
     }
 }

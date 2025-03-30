@@ -1,6 +1,6 @@
 # Proyecto-DPS
 
-![Logo UDB](https://www.google.com/url?sa=i&url=https%3A%2F%2Fadmacad.udb.edu.sv%2Fportalweb&psig=AOvVaw2trmWvrHCl5mbYruCpDDGw&ust=1743390069783000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCNCJ36HosIwDFQAAAAAdAAAAABAE)
+![Logo UDB](imgs/logoudb.png)
 
 Materia: Diseño y Programación de Software Multiplataforma DPS941 G01T
 
@@ -27,7 +27,11 @@ Validación de credenciales correctas o incorrectas.
 
 Imagen 1:
 
+![Imagen 1](imgs/imagen1.png)
+
 Imagen 2:
+
+![Imagen 2](imgs/imagen2.png)
 
 ## - Panel de Administración
 
@@ -41,31 +45,41 @@ Auditoría del sitio.
 
 Revisar los proyectos agregados.
 
-Vista general
+#### Vista general
 
-Auditoría
+![Imagen 3](imgs/imagen3.png)
 
-Registro de actividades dentro del sistema.
+#### Auditoría
 
-Mantenimiento
+![Imagen 4](imgs/imagen4.png)
 
-Administración del mantenimiento del sitio.
+#### Mantenimiento y Gestión de Proyectos
 
-## - Gestión de Proyectos
+![Imagen 5](imgs/imagen5.png)
 
-Creación de nuevos proyectos con validación de fechas:
+#### Creación de nuevos proyectos: 
 
-La fecha de inicio no puede ser menor a la actual.
+En esta parte, se valida la entrada de las fechas, ya que la fecha de inicio del proyecto no puede ser menor a la actual, y la fecha de finalización no puede ser menor a la fecha de inicio. 
 
-La fecha de finalización no puede ser menor a la fecha de inicio.
+![Imagen 6](imgs/imagen6.png)
 
 Una vez se validan las fechas, el proyecto es creado de manera exitosa.
 
+![Imagen 7](imgs/imagen7.png)
+
 ## - Página de Inicio de Usuarios
 
-Los usuarios pueden autenticarse y visualizar sus tareas asignadas.
+Una vez este agregado dentro del sistema, un usuario podrá acceder mediante su usuario y contraseña, validado igualmente como la parte del administrador, para revisar las tareas que este tenga asignadas.
 
-Interfaz para ver comentarios y actualizar el porcentaje de avance de una tarea.
+![Imagen 8](imgs/imagen8.png)
+
+Una vez el usuario sea autenticado, podrá ver las tareas que tenga asignadas: 
+
+![Imagen 9](imgs/imagen9.png)
+
+En el panel de gestión de usuarios, este podrá ver las tareas asignadas, ver los comentarios de esa tarea y aumentar el porcentaje de avance de dicha tarea. 
+
+![Imagen 10](imgs/imagen10.png)
 
 # 📂 Estructura del Proyecto
 
@@ -81,6 +95,8 @@ El proyecto es una aplicación basada en Next.js, con una estructura bien defini
 * Guarda el token en localStorage y redirige al usuario según su rol (admin, gerente, miembro).
 * Maneja errores en el inicio de sesión con mensajes dinámicos
 
+![Imagen 11](imgs/imagen11.png)
+
 #### login.js (Página de Login)
 
 * Similar a index.js, pero con una interfaz enfocada en la autenticación. 
@@ -93,6 +109,8 @@ El proyecto es una aplicación basada en Next.js, con una estructura bien defini
 * Importa estilos globales y Bootstrap.
 * Configura react-query para la gestión de datos y almacenamiento en caché.
 * Implementa un AuthProvider para manejar sesiones de usuario de manera global.
+
+![Imagen 12](imgs/imagen12.png)
 
 #### _document.js
 
@@ -107,6 +125,8 @@ El proyecto es una aplicación basada en Next.js, con una estructura bien defini
 * Usa axios para obtener datos de /api/actividad.
 * Permite exportar datos a Excel con xlsx.
 * Incluye un filtro por fecha y tipo de actividad. 
+
+![Imagen 12](imgs/imagen12.png)
 
 #### admin/index.js
 

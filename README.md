@@ -75,67 +75,65 @@ El proyecto es una aplicación basada en Next.js, con una estructura bien defini
 
 #### index.js (Página de inicio)
 
-● Implementa la lógica de inicio de sesión. 
-● Usa useState y useEffect para manejar el estado de autenticación. 
-● Envía credenciales a /api/auth/login usando axios. 
-● Guarda el token en localStorage y redirige al usuario según su rol (admin, 
-gerente, miembro). 
-● Maneja errores en el inicio de sesión con mensajes dinámicos
+* Implementa la lógica de inicio de sesión.
+* Usa useState y useEffect para manejar el estado de autenticación.
+* Envía credenciales a /api/auth/login usando axios.
+* Guarda el token en localStorage y redirige al usuario según su rol (admin, gerente, miembro).
+* Maneja errores en el inicio de sesión con mensajes dinámicos
 
 #### login.js (Página de Login)
 
-● Similar a index.js, pero con una interfaz enfocada en la autenticación. 
-● Incluye validación de campos (correo y contraseña). 
+* Similar a index.js, pero con una interfaz enfocada en la autenticación. 
+* Incluye validación de campos (correo y contraseña). 
 
 ## 2. Configuración Global
 
 #### _app.js
 
-● Importa estilos globales y Bootstrap. 
-● Configura react-query para la gestión de datos y almacenamiento en caché. 
-● Implementa un AuthProvider para manejar sesiones de usuario de manera 
-global.
+* Importa estilos globales y Bootstrap.
+* Configura react-query para la gestión de datos y almacenamiento en caché.
+* Implementa un AuthProvider para manejar sesiones de usuario de manera global.
 
 #### _document.js
 
-● Personaliza la estructura HTML de Next.js. 
-● Agrega metadatos importantes como título y descripción para SEO.
+* Personaliza la estructura HTML de Next.js.
+* Agrega metadatos importantes como título y descripción para SEO.
 
 ## 3. Panel de Administración (/admin)
 
 #### admin/auditoria.js
 
-● Muestra actividades del sistema paginadas. 
-● Usa axios para obtener datos de /api/actividad. 
-● Permite exportar datos a Excel con xlsx. 
-● Incluye un filtro por fecha y tipo de actividad. 
+* Muestra actividades del sistema paginadas.
+* Usa axios para obtener datos de /api/actividad.
+* Permite exportar datos a Excel con xlsx.
+* Incluye un filtro por fecha y tipo de actividad. 
 
 #### admin/index.js
 
-● Página principal del panel de administración. 
-● Muestra estadísticas generales del sistema. 
-● Acceso rápido a módulos clave (usuarios, proyectos, auditorías)
+* Página principal del panel de administración.
+* Muestra estadísticas generales del sistema.
+* Acceso rápido a módulos clave (usuarios, proyectos, auditorías)
 
 #### admin/mantenimiento.js
 
-● Gestiona copias de seguridad y restauración. 
-● Interactúa con /api/mantenimiento/respaldo y /api/mantenimiento/restaurar. 
-● Permite descargar backups en formato SQL.
+* Gestiona copias de seguridad y restauración.
+* Interactúa con /api/mantenimiento/respaldo y /api/mantenimiento/restaurar.
+* Permite descargar backups en formato SQL.
 
 ## 4. API (/api/)
 
 #### api/auth/login.js
 
-● Verifica credenciales y devuelve un token JWT. 
-● Hashea contraseñas con bcrypt. 
-● Maneja sesiones con jsonwebtoken.
+* Verifica credenciales y devuelve un token JWT.
+* Hashea contraseñas con bcrypt.
+* Maneja sesiones con jsonwebtoken.
 
 ## 5. Tecnologías Utilizadas
 
-●  Next.js como framework principal. 
-● JavaScript para la lógica del cliente y servidor. 
-● SQL (MySQL) para la base de datos. 
-● Vercel como posible plataforma de despliegue. 
-● Axios para la comunicación con la API. 
-● bcrypt y jsonwebtoken para seguridad y autenticación. 
-● React Query para el manejo eficiente de datos.
+* Next.js como framework principal.
+* JavaScript para la lógica del cliente y servidor.
+* SQL (MySQL) para la base de datos.
+* Vercel como posible plataforma de despliegue.
+* Axios para la comunicación con la API.
+* bcrypt y jsonwebtoken para seguridad y autenticación.
+* React Query para el manejo eficiente de datos.

@@ -9,6 +9,7 @@ export default function MantenimientoPanel() {
     const [usuario, setUsuario] = useState(null); 
     const router = useRouter();
 
+    //validar token
     useEffect(() => {
         const token = localStorage.getItem("token");
 
@@ -17,6 +18,8 @@ export default function MantenimientoPanel() {
         } else {
             const user = jwt.decode(token);
             setUsuario(user); 
+
+            //validar rol
             if (!user || user.rol !== 1) {
                 Swal.fire("Acceso denegado", "No tienes permisos para ver esta página", "error");
                 router.push("/dashboard");
@@ -24,10 +27,12 @@ export default function MantenimientoPanel() {
         }
     }, [router]);
 
+    //Abre una nueva pestaña para descargar el respaldo de la BD
     const generarRespaldo = () => {
         window.open('/api/mantenimiento/respaldo', '_blank');
     };
 
+    //función para restaurar la BD
     const subirRespaldo = async () => {
         if (!archivo) return Swal.fire('Advertencia', 'Selecciona un archivo primero', 'warning');
 
@@ -35,6 +40,7 @@ export default function MantenimientoPanel() {
         formData.append('archivo', archivo);
 
         try {
+            // Envía el archivo al backend para restaurar la BD
             const res = await axios.post('/api/mantenimiento/restaurar', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });

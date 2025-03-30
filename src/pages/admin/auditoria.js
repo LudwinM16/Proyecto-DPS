@@ -3,19 +3,21 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 import Swal from "sweetalert2";
-import * as XLSX from "xlsx";
+import * as XLSX from "xlsx"; //biblioteca para exporta a excel
 import { saveAs } from "file-saver";
 
+//Componente principal
 export default function AuditoriaPanel() {
   const router = useRouter();
   const [actividades, setActividades] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);//página actual para paginación
+  const [totalPages, setTotalPages] = useState(1);//total páginas disponibles
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [usuario, setUsuario] = useState(null);
-  const limit = 10;
+  const limit = 10;//registros para mostrar por página
 
+  //obtención de las actividades desde la API
   const fetchActividades = async (token) => {
     try {
       setLoading(true);
@@ -25,6 +27,7 @@ export default function AuditoriaPanel() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      //Evalua y almacena la cantidad de resultados y páginas
       setActividades(res.data.data);
       setTotalPages(res.data.pagination.totalPages);
     } catch (err) {
@@ -35,10 +38,12 @@ export default function AuditoriaPanel() {
     }
   };
 
+  //Validar token
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (!token) {
+      //si el token no es válido o no existe, redirige al inicio
       router.push("../");
       return;
     }
@@ -55,6 +60,7 @@ export default function AuditoriaPanel() {
     fetchActividades(token);
   }, [page, router]);
 
+  // Función para exportar las actividades a un archivo Excel
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(
       actividades.map((act) => ({
@@ -109,6 +115,7 @@ export default function AuditoriaPanel() {
         </div>
       </div>
 
+      {/* Tarjeta principal con la tabla */}
       <div className="card">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>Registro de Actividades</span>
@@ -118,6 +125,7 @@ export default function AuditoriaPanel() {
         </div>
 
         <div className="card-body">
+          {/* Tabla de actividades */}
           <table className="table table-striped table-hover">
             <thead className="table-dark">
               <tr>

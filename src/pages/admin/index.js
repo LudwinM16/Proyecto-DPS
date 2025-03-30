@@ -6,22 +6,27 @@ import jwt from "jsonwebtoken";
 import Swal from 'sweetalert2';
 
 
-
+// Componente principal del adminpanel
 export default function AdminPanel() {
+
+    // Estados para el formulario de agregar usuario
     const router = useRouter();
     const [nombreUsuario, setNombreUsuario] = useState("");
     const [contraseña, setContraseña] = useState("");
     const [rolId, setRolId] = useState(3);
 
+    // Estados para el formulario de agregar usuario
     const [usuarioEditar, setUsuarioEditar] = useState(null);
     const [nuevoNombre, setNuevoNombre] = useState("");
     const [nuevaContrasena, setNuevaContrasena] = useState("");
     const [nuevoRol, setNuevoRol] = useState(3);
+    // Estado para almacenar el usuario autenticado (extraído del token)
     const [usuario, setUsuario] = useState(null);
 
 
     const queryClient = useQueryClient();
 
+    // Obtener lista de usuarios desde la API
     const { data: usuarios, isLoading, error } = useQuery({
         queryKey: ["usuarios"],
         queryFn: async () => {
@@ -32,6 +37,7 @@ export default function AdminPanel() {
         }
     });
 
+    // Modal para editar el usuario seleccionado
     const abrirModalEditar = (usuario) => {
         setUsuarioEditar(usuario);
         setNuevoNombre(usuario.nombre_usuario);
@@ -39,6 +45,7 @@ export default function AdminPanel() {
         setNuevoRol(usuario.rol_id);
     };
 
+    // Cerrar el modal de edición y limpiar campos
     const cerrarModalEditar = () => {
         setUsuarioEditar(null);
         setNuevoNombre("");
@@ -46,6 +53,7 @@ export default function AdminPanel() {
         setNuevoRol(3);
     };
 
+     // Validaciones para inputs (números, emojis, etc.)
     const limpiarTexto = (texto) => {
         return texto
             .replace(/[\d]/g, '')
@@ -57,6 +65,7 @@ export default function AdminPanel() {
             .trim();
     };
 
+    // Mutación para agregar un usuario
     const agregarUsuario = useMutation({
         mutationFn: async () => {
             console.log("⏳ Enviando solicitud a la API...");
@@ -84,6 +93,7 @@ export default function AdminPanel() {
         }
     });
 
+    // Mutación para eliminar un usuario
     const eliminarUsuario = useMutation({
         mutationFn: async (id) => {
             await axios.delete(`/api/usuarios/${id}`, {
@@ -100,6 +110,7 @@ export default function AdminPanel() {
         }
     });
 
+    // Mutación para editar un usuario
     const editarUsuario = useMutation({
         mutationFn: async () => {
             await axios.put(`/api/usuarios/${usuarioEditar.id}`, {
@@ -121,6 +132,7 @@ export default function AdminPanel() {
         }
     });
 
+    // Validación de token del usuario cuando se carga el adminpanel
     useEffect(() => {
         const token = localStorage.getItem("token");
 
@@ -130,6 +142,7 @@ export default function AdminPanel() {
             const user = jwt.decode(token);
             setUsuario(user);
 
+            // Comprobación de rol de admin para ver este panel
             if (!user || user.rol !== 1) {
                 Swal.fire("Acceso denegado", "No tienes permisos para ver esta página", "error");
                 router.push("/dashboard");
@@ -137,6 +150,7 @@ export default function AdminPanel() {
         }
     }, [router]);
 
+    // Manejo de cierre de sesión
     const handleLogout = () => {
         Swal.fire({
             title: "¿Estás seguro?",
@@ -156,11 +170,15 @@ export default function AdminPanel() {
     };
 
 
+    // Mostrar mensaje mientras carga la página o error
     if (isLoading) return <p className="text-center mt-4">Cargando usuarios...</p>;
     if (error) return <p className="text-center text-danger mt-4">Error al cargar usuarios.</p>;
 
     return (
         <div className="container mt-5">
+
+        {/* Encabezados */}
+        
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1>Panel de Administración</h1>
                 <div>

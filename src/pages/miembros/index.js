@@ -46,7 +46,7 @@ const handleLogout = () => {
         }
     });
 };
-
+//Lista las tareas disponibles para el usuario en sesión
   const fetchTareas = async (token) => {
     try {
       const response = await fetch('/api/miembro/tareas', {

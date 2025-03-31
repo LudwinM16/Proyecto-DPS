@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   authMiddleware(req, res, async () => {
     try {
       const usuarioId = req.user.id;
-
+      // Listar Tareas disponibles para usuario
       const [tareas] = await pool.query(`
         SELECT
           t.id,
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       if (tareas.length === 0) {
         return res.status(200).json({ tareas: [] });
       }
-
+      //Listar comentarios por cada tarea
       const tareasConComentarios = await Promise.all(
         tareas.map(async (tarea) => {
           const [comentarios] = await pool.query(`

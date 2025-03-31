@@ -54,7 +54,7 @@ export default async function handler(req, res) {
           console.error('Error al obtener la tarea:', error);
           return res.status(500).json({ error: 'Error al obtener la tarea' });
         }
-
+      // Inserta Comentarios
       case 'POST':
         try {
           const { comentario, porcentaje } = req.body;
@@ -83,7 +83,7 @@ export default async function handler(req, res) {
             .status(500)
             .json({ error: 'Error al registrar el comentario' });
         }
-
+      // Agrega un nuevo comentario
       case 'PATCH':
         try {
           const { porcentaje, comentario } = req.body;

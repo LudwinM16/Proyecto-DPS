@@ -1,159 +1,159 @@
-# Proyecto-DPS
+# 🎓 Proyecto-DPS
 
 ![Logo UDB](imgs/logoudb.png)
 
-Materia: Diseño y Programación de Software Multiplataforma DPS941 G01T
+**Materia:** Diseño y Programación de Software Multiplataforma — *DPS941 G01T*  
+**Docente:** Ing. Alexander Alberto Sigüenza Campos
 
-Docente: Ing. Alexander Alberto Siguenza CamposTrabajo de Investigación
+## 👥 Integrantes
 
-👥 Integrantes
+- **Carlos Adalberto Campos Hernández** - CH222748  
+- **José Valentín Corcios Segovia** - CS232913  
+- **Ludwin Enrique Martínez Alfaro** - MA222763  
+- **Fernando Samuel Quijada Arévalo** - QA190088  
 
-Carlos Adalberto Campos Hernandez - CH222748
+---
 
-Jose Valentin Corcios Segovia - CS232913
+## 🎥 Video de Presentación
 
-Ludwin Enrique Martinez Alfaro - MA222763
+> Mira la demostración del proyecto en el siguiente enlace:  
+[![Video de Presentación](https://img.youtube.com/vi/sYNgu23d_5c/0.jpg)](https://youtu.be/sYNgu23d_5c)
 
-Fernando Samuel Quijada Arevalo - QA190088
+---
 
+## 🚀 Funcionalidades Principales
 
-# Funcionalidades Principales
+### 🔐 Inicio de Sesión
 
-## - Inicio de Sesión / Login Page
+- Página principal de login donde el usuario ingresa sus credenciales.
+- Validación de credenciales correctas o incorrectas.
 
-Se muestra la página principal donde se ingresará el usuario y contraseña.
-
-Validación de credenciales correctas o incorrectas.
-
-Imagen 1:
+**Capturas:**
 
 ![Imagen 1](imgs/imagen1.png)
-
-Imagen 2:
-
 ![Imagen 2](imgs/imagen2.png)
 
-## - Panel de Administración
+---
 
-Una vez que el usuario inicie sesión como administrador, tendrá acceso a:
+### 🛠️ Panel de Administración
 
-Agregar, editar y eliminar usuarios.
+Accesible únicamente para administradores, permite:
 
-Mantenimiento del sistema.
+- Agregar, editar y eliminar usuarios.
+- Mantenimiento del sistema.
+- Auditoría del sitio.
+- Revisión y gestión de proyectos.
 
-Auditoría del sitio.
+**Capturas:**
 
-Revisar los proyectos agregados.
+- Vista general  
+  ![Imagen 3](imgs/imagen3.png)
 
-#### Vista general
+- Auditoría del sistema  
+  ![Imagen 4](imgs/imagen4.png)
 
-![Imagen 3](imgs/imagen3.png)
+- Gestión de proyectos y mantenimiento  
+  ![Imagen 5](imgs/imagen5.png)
 
-#### Auditoría
+#### ✅ Validación en Creación de Proyectos
 
-![Imagen 4](imgs/imagen4.png)
+- Validación de fechas:  
+  - La fecha de inicio no puede ser menor a la actual.  
+  - La fecha de finalización no puede ser menor a la fecha de inicio.  
 
-#### Mantenimiento y Gestión de Proyectos
-
-![Imagen 5](imgs/imagen5.png)
-
-#### Creación de nuevos proyectos: 
-
-En esta parte, se valida la entrada de las fechas, ya que la fecha de inicio del proyecto no puede ser menor a la actual, y la fecha de finalización no puede ser menor a la fecha de inicio. 
-
-![Imagen 6](imgs/imagen6.png)
-
-Una vez se validan las fechas, el proyecto es creado de manera exitosa.
-
+![Imagen 6](imgs/imagen6.png)  
 ![Imagen 7](imgs/imagen7.png)
 
-## - Página de Inicio de Usuarios
+---
 
-Una vez este agregado dentro del sistema, un usuario podrá acceder mediante su usuario y contraseña, validado igualmente como la parte del administrador, para revisar las tareas que este tenga asignadas.
+### 👤 Página de Inicio de Usuarios
 
-![Imagen 8](imgs/imagen8.png)
+Los usuarios autenticados pueden:
 
-Una vez el usuario sea autenticado, podrá ver las tareas que tenga asignadas: 
+- Visualizar tareas asignadas.
+- Ver comentarios en tareas.
+- Actualizar el progreso de las mismas.
 
-![Imagen 9](imgs/imagen9.png)
+**Capturas:**
 
-En el panel de gestión de usuarios, este podrá ver las tareas asignadas, ver los comentarios de esa tarea y aumentar el porcentaje de avance de dicha tarea. 
-
+![Imagen 8](imgs/imagen8.png)  
+![Imagen 9](imgs/imagen9.png)  
 ![Imagen 10](imgs/imagen10.png)
 
-# 📂 Estructura del Proyecto
+---
 
-El proyecto es una aplicación basada en Next.js, con una estructura bien definida que separa páginas, componentes y API.
+## 📂 Estructura del Proyecto
 
-## 1. Páginas Principales
+El proyecto está desarrollado con **Next.js**, con una arquitectura modular clara entre páginas, componentes y API.
 
-#### index.js (Página de inicio)
+### 📄 Páginas Principales
 
-* Implementa la lógica de inicio de sesión.
-* Usa useState y useEffect para manejar el estado de autenticación.
-* Envía credenciales a /api/auth/login usando axios.
-* Guarda el token en localStorage y redirige al usuario según su rol (admin, gerente, miembro).
-* Maneja errores en el inicio de sesión con mensajes dinámicos
+#### `index.js` (Inicio)
 
-![Imagen 11](imgs/imagen11.png)
+- Controla la lógica de autenticación.
+- Envía credenciales a `/api/auth/login`.
+- Guarda el token en `localStorage` y redirige según el rol.
+- Manejo de errores con mensajes personalizados.
 
-#### login.js (Página de Login)
+#### `login.js` (Login)
 
-* Similar a index.js, pero con una interfaz enfocada en la autenticación. 
-* Incluye validación de campos (correo y contraseña). 
+- Validación de campos (correo y contraseña).
+- Enfoque directo en la autenticación.
 
-## 2. Configuración Global
+### ⚙️ Configuración Global
 
-#### _app.js
+#### `_app.js`
 
-* Importa estilos globales y Bootstrap.
-* Configura react-query para la gestión de datos y almacenamiento en caché.
-* Implementa un AuthProvider para manejar sesiones de usuario de manera global.
+- Importación de estilos globales y Bootstrap.
+- Configuración de `React Query`.
+- Implementación del `AuthProvider`.
 
-![Imagen 12](imgs/imagen12.png)
+#### `_document.js`
 
-#### _document.js
+- Personalización del documento HTML base.
+- Inclusión de metadatos para SEO.
 
-* Personaliza la estructura HTML de Next.js.
-* Agrega metadatos importantes como título y descripción para SEO.
+---
 
-## 3. Panel de Administración (/admin)
+## 🛡️ Panel de Administración (`/admin`)
 
-#### admin/auditoria.js
+#### `admin/auditoria.js`
 
-* Muestra actividades del sistema paginadas.
-* Usa axios para obtener datos de /api/actividad.
-* Permite exportar datos a Excel con xlsx.
-* Incluye un filtro por fecha y tipo de actividad. 
+- Muestra actividades del sistema paginadas.
+- Exportación a Excel con `xlsx`.
+- Filtros por fecha y tipo de actividad.
 
 ![Imagen 12](imgs/imagen12.png)
 
-#### admin/index.js
+#### `admin/index.js`
 
-* Página principal del panel de administración.
-* Muestra estadísticas generales del sistema.
-* Acceso rápido a módulos clave (usuarios, proyectos, auditorías)
+- Página de inicio del panel.
+- Estadísticas del sistema.
+- Accesos rápidos a usuarios, proyectos y auditoría.
 
-#### admin/mantenimiento.js
+#### `admin/mantenimiento.js`
 
-* Gestiona copias de seguridad y restauración.
-* Interactúa con /api/mantenimiento/respaldo y /api/mantenimiento/restaurar.
-* Permite descargar backups en formato SQL.
+- Gestión de respaldos y restauración de base de datos.
+- Descarga de respaldos en formato `.sql`.
 
-## 4. API (/api/)
+---
 
-#### api/auth/login.js
+## 🔌 API (`/api/`)
 
-* Verifica credenciales y devuelve un token JWT.
-* Hashea contraseñas con bcrypt.
-* Maneja sesiones con jsonwebtoken.
+#### `api/auth/login.js`
 
-## 5. Tecnologías Utilizadas
+- Validación de credenciales.
+- Hasheo de contraseñas con `bcrypt`.
+- Generación de token JWT para manejo de sesiones.
 
-* Next.js como framework principal.
-* JavaScript para la lógica del cliente y servidor.
-* SQL (MySQL) para la base de datos.
-* Vercel como posible plataforma de despliegue.
-* Axios para la comunicación con la API.
-* bcrypt y jsonwebtoken para seguridad y autenticación.
-* React Query para el manejo eficiente de datos.
+---
+
+## 🧰 Tecnologías Utilizadas
+
+- **Next.js** (framework principal)
+- **JavaScript** (frontend y backend)
+- **MySQL** (base de datos)
+- **Vercel** (despliegue)
+- **Axios** (peticiones HTTP)
+- **bcrypt** y **jsonwebtoken** (autenticación)
+- **React Query** (gestión de datos eficiente)
